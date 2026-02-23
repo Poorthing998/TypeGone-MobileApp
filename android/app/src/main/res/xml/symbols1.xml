@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Number & Common Symbol Layer (123 key) -->
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="10%p"
+    android:horizontalGap="0.5%p"
+    android:verticalGap="4dp"
+    android:keyHeight="52dp">
+
+    <!-- Row 1: 1 2 3 4 5 6 7 8 9 0 -->
+    <Row>
+        <Key android:codes="49"  android:keyLabel="1" android:keyWidth="9.6%p" android:keyEdgeFlags="left" android:horizontalGap="0.5%p"/>
+        <Key android:codes="50"  android:keyLabel="2" android:keyWidth="9.6%p"/>
+        <Key android:codes="51"  android:keyLabel="3" android:keyWidth="9.6%p"/>
+        <Key android:codes="52"  android:keyLabel="4" android:keyWidth="9.6%p"/>
+        <Key android:codes="53"  android:keyLabel="5" android:keyWidth="9.6%p"/>
+        <Key android:codes="54"  android:keyLabel="6" android:keyWidth="9.6%p"/>
+        <Key android:codes="55"  android:keyLabel="7" android:keyWidth="9.6%p"/>
+        <Key android:codes="56"  android:keyLabel="8" android:keyWidth="9.6%p"/>
+        <Key android:codes="57"  android:keyLabel="9" android:keyWidth="9.6%p"/>
+        <Key android:codes="48"  android:keyLabel="0" android:keyWidth="9.6%p" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <!-- Row 2: - / : ; ( ) $ & @ " -->
+    <Row>
+        <Key android:codes="45"  android:keyLabel="-" android:keyWidth="9.6%p" android:keyEdgeFlags="left" android:horizontalGap="0.5%p"/>
+        <Key android:codes="47"  android:keyLabel="/" android:keyWidth="9.6%p"/>
+        <Key android:codes="58"  android:keyLabel=":" android:keyWidth="9.6%p"/>
+        <Key android:codes="59"  android:keyLabel=";" android:keyWidth="9.6%p"/>
+        <Key android:codes="40"  android:keyLabel="(" android:keyWidth="9.6%p"/>
+        <Key android:codes="41"  android:keyLabel=")" android:keyWidth="9.6%p"/>
+        <Key android:codes="36"  android:keyLabel="$" android:keyWidth="9.6%p"/>
+        <Key android:codes="38"  android:keyLabel="&amp;" android:keyWidth="9.6%p"/>
+        <Key android:codes="64"  android:keyLabel="\@" android:keyWidth="9.6%p"/>
+        <Key android:codes="34"  android:keyLabel="&quot;" android:keyWidth="9.6%p" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <!-- Row 3: #+=  .  ,  ?  !  '  Backspace -->
+    <Row>
+        <Key android:codes="-12" android:keyLabel="#+=\n" android:keyWidth="14.5%p" android:isModifier="true" android:keyEdgeFlags="left"/>
+        <Key android:codes="46"  android:keyLabel="." android:keyWidth="9.6%p"/>
+        <Key android:codes="44"  android:keyLabel="," android:keyWidth="9.6%p"/>
+        <Key android:codes="63"  android:keyLabel="?" android:keyWidth="9.6%p"/>
+        <Key android:codes="33"  android:keyLabel="!" android:keyWidth="9.6%p"/>
+        <Key android:codes="39"  android:keyLabel="'" android:keyWidth="9.6%p"/>
+        <Key android:codes="95"  android:keyLabel="_" android:keyWidth="9.6%p"/>
+        <Key android:codes="-5"  android:keyLabel="⌫" android:keyWidth="14.5%p" android:isRepeatable="true" android:isModifier="true" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <!-- Row 4: ABC | , | Space | . | Enter -->
+    <Row android:rowEdgeFlags="bottom">
+        <Key android:codes="-13" android:keyLabel="ABC"   android:keyWidth="14.5%p" android:isModifier="true" android:keyEdgeFlags="left"/>
+        <Key android:codes="44"  android:keyLabel=","     android:keyWidth="9%p"/>
+        <Key android:codes="32"  android:keyLabel="space" android:keyWidth="43%p"/>
+        <Key android:codes="46"  android:keyLabel="."     android:keyWidth="9%p"/>
+        <Key android:codes="-4"  android:keyLabel="⏎"  android:keyWidth="14.5%p" android:isModifier="true" android:keyEdgeFlags="right"/>
+    </Row>
+
+</Keyboard>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Subtle key preview — small, rounded, matches dark theme -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="56dp"
+    android:layout_height="56dp"
+    android:gravity="center"
+    android:background="@drawable/key_preview_bg"
+    android:textColor="#FFFFFF"
+    android:textSize="18sp"
+    android:textStyle="normal"/>
