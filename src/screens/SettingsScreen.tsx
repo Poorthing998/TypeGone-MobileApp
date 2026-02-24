@@ -247,6 +247,8 @@ export function SettingsScreen() {
                     <Text style={s.signOutText}>Sign Out</Text>
                 </TouchableOpacity>
 
+                {/* App Version */}
+                <Text style={s.versionText}>TypeGone v{require('../../app.json').expo.version}</Text>
             </ScrollView>
         </View>
     );
@@ -371,4 +373,9 @@ const s = StyleSheet.create({
         borderWidth: 1, borderColor: '#E94560', marginTop: 6,
     },
     signOutText: { color: '#E94560', fontSize: 15, fontWeight: '600' },
+
+    versionText: {
+        color: '#7C7A85', fontSize: 12, textAlign: 'center',
+        marginTop: 20, marginBottom: 10, opacity: 0.6
+    },
 });

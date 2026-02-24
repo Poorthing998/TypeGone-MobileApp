@@ -15,8 +15,10 @@ import {
 const VERSION_CHECK_URL =
     'https://raw.githubusercontent.com/Poorthing998/TypeGone-MobileApp/main/version.json';
 
+import appConfig from '../../app.json';
+
 // The CURRENT version baked into this build
-const CURRENT_VERSION = '1.1.0';
+const CURRENT_VERSION = appConfig.expo.version;
 
 // ─── Helpers ─────────────────────────────────────────────────────
 function isNewer(remote: string, local: string): boolean {

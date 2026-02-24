@@ -1,7 +1,7 @@
 {
-    "version": "1.2.0",
-    "versionCode": 3,
-    "releaseNotes": "v1.2.0 — Multi-Language Support!\n\n• Added support for 8 keyboard languages (Persian, Arabic, Spanish, French, German, Russian, Portuguese)\n• Tap the 🌐 globe key to switch languages\n• Select active languages in the new Keyboard Settings menu\n• All features from v1.1.0 included (Themes, UX improvements, Enter key actions)",
+    "version": "1.2.1",
+    "versionCode": 4,
+    "releaseNotes": "v1.2.1 — Hotfix Update\n\n• Fixed an issue causing the update popup to repeatedly appear after installation\n• Added app version display to the bottom of the Settings page",
     "downloadUrl": "https://github.com/Poorthing998/telegram-voice-bot-website/releases/download/v.1.2.0/app-release.apk",
     "mandatory": false
 }
