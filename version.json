@@ -1,7 +1,7 @@
 {
-    "version": "1.1.0",
-    "versionCode": 2,
-    "releaseNotes": "v1.1.0 — Keyboard UX Update\n\n• Dark/Light theme toggle with live switching\n• Enter key adapts to app context (✓ search, → go, ➤ send)\n• Subtler key press preview animation\n• Keyboard positioned above gesture navigation bar\n• MIC button now clearly visible in both themes\n• App icon updated",
+    "version": "1.2.0",
+    "versionCode": 3,
+    "releaseNotes": "v1.2.0 — Multi-Language Support!\n\n• Added support for 8 keyboard languages (Persian, Arabic, Spanish, French, German, Russian, Portuguese)\n• Tap the 🌐 globe key to switch languages\n• Select active languages in the new Keyboard Settings menu\n• All features from v1.1.0 included (Themes, UX improvements, Enter key actions)",
     "downloadUrl": "https://typegone.com/download/app-release.apk",
     "mandatory": false
 }

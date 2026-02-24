@@ -33,8 +33,23 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
     private var recordButton: TextView? = null
     private var shortcutButton: TextView? = null
 
+    // ─── Language System ─────────────────────────────────────────────
+    data class LangInfo(val code: String, val label: String, val nativeLabel: String, val xmlRes: Int)
+    private val ALL_LANGUAGES = listOf(
+        LangInfo("en", "English",    "English",    R.xml.qwerty),
+        LangInfo("fa", "Persian",    "فارسی",     R.xml.persian),
+        LangInfo("ar", "Arabic",     "العربية",    R.xml.arabic),
+        LangInfo("es", "Spanish",    "Español",    R.xml.spanish),
+        LangInfo("fr", "French",     "Français",   R.xml.french),
+        LangInfo("de", "German",     "Deutsch",    R.xml.german),
+        LangInfo("ru", "Russian",    "Русский",    R.xml.russian),
+        LangInfo("pt", "Portuguese", "Português",  R.xml.portuguese),
+    )
+    private var activeLanguages = mutableListOf("en")
+    private var currentLangIndex = 0
+
     // ─── Keyboard Layouts ────────────────────────────────────────────
-    private var qwertyKeyboard: Keyboard? = null
+    private var letterKeyboard: Keyboard? = null   // current language
     private var symbols1Keyboard: Keyboard? = null
     private var symbols2Keyboard: Keyboard? = null
     private var currentKeyboard: Keyboard? = null
@@ -46,6 +61,7 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
     private val CODE_TO_SYM1 = -11  // "123" key
     private val CODE_TO_SYM2 = -12  // "#+=" key
     private val CODE_TO_ABC  = -13  // "ABC" key
+    private val CODE_GLOBE   = -14  // Language switcher
     private val CODE_SPACE   = 32
 
     // ─── Shift State Machine ─────────────────────────────────────────
@@ -130,16 +146,23 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
         shortcutButton = view.findViewById(R.id.shortcutButton)
         keyboardView   = view.findViewById(R.id.keyboard_view)
 
-        // Pre-load all three keyboard layouts
-        qwertyKeyboard  = Keyboard(this, R.xml.qwerty)
+        // Load active languages from prefs
+        loadActiveLanguages()
+
+        // Load keyboard for current language
+        val langInfo = ALL_LANGUAGES.find { it.code == activeLanguages[currentLangIndex] } ?: ALL_LANGUAGES[0]
+        letterKeyboard  = Keyboard(this, langInfo.xmlRes)
         symbols1Keyboard = Keyboard(this, R.xml.symbols1)
         symbols2Keyboard = Keyboard(this, R.xml.symbols2)
 
-        // Start on QWERTY
-        currentKeyboard = qwertyKeyboard
+        // Start on letter keyboard
+        currentKeyboard = letterKeyboard
         keyboardView?.keyboard = currentKeyboard
         keyboardView?.isPreviewEnabled = true
         keyboardView?.setOnKeyboardActionListener(this)
+
+        // Show current language in status bar
+        statusText?.text = "${langInfo.nativeLabel} — Tap MIC to voice-type"
 
         // MIC toggle
         recordButton?.setOnClickListener {
@@ -220,7 +243,13 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
             // ── Layer Switching ───────────────────────────────────
             CODE_TO_SYM1 -> switchKeyboard(symbols1Keyboard)
             CODE_TO_SYM2 -> switchKeyboard(symbols2Keyboard)
-            CODE_TO_ABC  -> switchKeyboard(qwertyKeyboard)
+            CODE_TO_ABC  -> switchKeyboard(letterKeyboard)
+
+            // ── Language Switching (Globe key) ───────────────────────
+            CODE_GLOBE -> {
+                cycleLanguage()
+                hapticMedium()
+            }
 
             // ── Space (with double-space → period logic) ─────────
             CODE_SPACE -> {
@@ -354,15 +383,50 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
     // ═════════════════════════════════════════════════════════════════
 
     private fun switchKeyboard(kb: Keyboard?) {
-        currentKeyboard = kb ?: qwertyKeyboard
+        currentKeyboard = kb ?: letterKeyboard
         keyboardView?.keyboard = currentKeyboard
         // Reset shift when switching to symbols
-        if (currentKeyboard != qwertyKeyboard) {
+        if (currentKeyboard != letterKeyboard) {
             shiftState = ShiftState.OFF
             currentKeyboard?.isShifted = false
         }
         keyboardView?.invalidateAllKeys()
         hapticLight()
+    }
+
+    // ═════════════════════════════════════════════════════════════════
+    //  LANGUAGE SWITCHING
+    // ═════════════════════════════════════════════════════════════════
+
+    private fun loadActiveLanguages() {
+        try {
+            val prefs = getSharedPreferences("typegone_prefs", Context.MODE_PRIVATE)
+            val json = prefs.getString("active_languages", null)
+            if (json != null) {
+                val arr = JSONArray(json)
+                activeLanguages.clear()
+                for (i in 0 until arr.length()) {
+                    activeLanguages.add(arr.getString(i))
+                }
+            }
+            // Always ensure at least English
+            if (activeLanguages.isEmpty()) activeLanguages.add("en")
+        } catch (_: Exception) {
+            activeLanguages = mutableListOf("en")
+        }
+    }
+
+    private fun cycleLanguage() {
+        if (activeLanguages.size <= 1) return
+        currentLangIndex = (currentLangIndex + 1) % activeLanguages.size
+        val langCode = activeLanguages[currentLangIndex]
+        val langInfo = ALL_LANGUAGES.find { it.code == langCode } ?: ALL_LANGUAGES[0]
+        letterKeyboard = Keyboard(this, langInfo.xmlRes)
+        currentKeyboard = letterKeyboard
+        keyboardView?.keyboard = currentKeyboard
+        shiftState = ShiftState.OFF
+        keyboardView?.invalidateAllKeys()
+        statusText?.text = "${langInfo.nativeLabel} — Tap MIC to voice-type"
     }
 
     // ═════════════════════════════════════════════════════════════════

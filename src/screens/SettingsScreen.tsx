@@ -17,12 +17,25 @@ export function SettingsScreen() {
     const { user, profile, profileError, signOut, refreshProfile } = useAuth();
     const [usage, setUsage] = useState<any>(null);
     const [isDarkTheme, setIsDarkTheme] = useState(true);
+    const [activeLangs, setActiveLangs] = useState<string[]>(['en']);
+
+    const LANGUAGES = [
+        { code: 'en', flag: '🇬🇧', label: 'English', native: 'English' },
+        { code: 'fa', flag: '🇮🇷', label: 'Persian', native: 'فارسی' },
+        { code: 'ar', flag: '🇸🇦', label: 'Arabic', native: 'العربية' },
+        { code: 'es', flag: '🇪🇸', label: 'Spanish', native: 'Español' },
+        { code: 'fr', flag: '🇫🇷', label: 'French', native: 'Français' },
+        { code: 'de', flag: '🇩🇪', label: 'German', native: 'Deutsch' },
+        { code: 'ru', flag: '🇷🇺', label: 'Russian', native: 'Русский' },
+        { code: 'pt', flag: '🇵🇹', label: 'Portuguese', native: 'Português' },
+    ];
 
     useFocusEffect(
         useCallback(() => {
             refreshProfile();
             checkUsage();
             loadTheme();
+            loadLanguages();
         }, [])
     );
 
@@ -43,6 +56,37 @@ export function SettingsScreen() {
             const DefaultPreference = require('react-native-default-preference').default;
             await DefaultPreference.setName('typegone_prefs');
             await DefaultPreference.set('keyboard_theme', dark ? 'dark' : 'light');
+        } catch { }
+    };
+
+    const loadLanguages = async () => {
+        try {
+            const DefaultPreference = require('react-native-default-preference').default;
+            await DefaultPreference.setName('typegone_prefs');
+            const json = await DefaultPreference.get('active_languages');
+            if (json) {
+                const arr = JSON.parse(json);
+                if (Array.isArray(arr) && arr.length > 0) setActiveLangs(arr);
+            }
+        } catch {
+            setActiveLangs(['en']);
+        }
+    };
+
+    const toggleLanguage = async (code: string) => {
+        let updated: string[];
+        if (code === 'en') return; // English always active
+        if (activeLangs.includes(code)) {
+            updated = activeLangs.filter(c => c !== code);
+        } else {
+            updated = [...activeLangs, code];
+        }
+        if (updated.length === 0) updated = ['en'];
+        setActiveLangs(updated);
+        try {
+            const DefaultPreference = require('react-native-default-preference').default;
+            await DefaultPreference.setName('typegone_prefs');
+            await DefaultPreference.set('active_languages', JSON.stringify(updated));
         } catch { }
     };
 
@@ -160,6 +204,28 @@ export function SettingsScreen() {
                     </View>
                 </View>
 
+                {/* Keyboard Languages */}
+                <View style={s.card}>
+                    <Text style={s.cardH}>Keyboard Languages</Text>
+                    <Text style={s.themeSub}>Tap 🌐 on keyboard to cycle • Switch keyboards to apply</Text>
+                    {LANGUAGES.map(lang => (
+                        <View key={lang.code} style={s.langRow}>
+                            <Text style={s.langFlag}>{lang.flag}</Text>
+                            <View style={{ flex: 1 }}>
+                                <Text style={s.langLabel}>{lang.label}</Text>
+                                <Text style={s.langNative}>{lang.native}</Text>
+                            </View>
+                            <Switch
+                                value={activeLangs.includes(lang.code)}
+                                onValueChange={() => toggleLanguage(lang.code)}
+                                disabled={lang.code === 'en'}
+                                trackColor={{ false: '#2C2C2E', true: '#3A3A3C' }}
+                                thumbColor={activeLangs.includes(lang.code) ? '#E8A83E' : '#555'}
+                            />
+                        </View>
+                    ))}
+                </View>
+
                 {/* Voice Modes */}
                 <TouchableOpacity style={s.menuItem} activeOpacity={0.8}
                     onPress={() => navigation.navigate('Modes')}>
@@ -275,6 +341,14 @@ const s = StyleSheet.create({
     themeToggle: { flexDirection: 'row', alignItems: 'center', gap: 6 },
     themeLabel: { fontSize: 18, opacity: 0.4 },
     themeLabelActive: { opacity: 1 },
+
+    langRow: {
+        flexDirection: 'row', alignItems: 'center', width: '100%',
+        paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#1F1F25',
+    },
+    langFlag: { fontSize: 24, marginRight: 12 },
+    langLabel: { color: '#EAEAE8', fontSize: 15, fontWeight: '600' },
+    langNative: { color: '#7C7A85', fontSize: 12, marginTop: 1 },
 
     menuItem: {
         backgroundColor: '#111113', borderRadius: 14, padding: 18,
