@@ -2,6 +2,6 @@
     "version": "1.2.1",
     "versionCode": 4,
     "releaseNotes": "v1.2.1 — Hotfix Update\n\n• Fixed an issue causing the update popup to repeatedly appear after installation\n• Added app version display to the bottom of the Settings page",
-    "downloadUrl": "https://github.com/Poorthing998/telegram-voice-bot-website/releases/download/v.1.2.0/app-release.apk",
+    "downloadUrl": "https://github.com/Poorthing998/telegram-voice-bot-website/releases/download/v1.2.1/TypeGone.v1.2.1.apk",
     "mandatory": false
 }
