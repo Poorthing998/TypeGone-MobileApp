@@ -1,7 +1,7 @@
 {
-    "version": "1.2.1",
-    "versionCode": 4,
-    "releaseNotes": "v1.2.1 — Hotfix Update\n\n• Fixed an issue causing the update popup to repeatedly appear after installation\n• Added app version display to the bottom of the Settings page",
-    "downloadUrl": "https://github.com/Poorthing998/telegram-voice-bot-website/releases/download/v1.2.1/TypeGone.v1.2.1.apk",
+    "version": "1.3.0",
+    "versionCode": 5,
+    "releaseNotes": "v1.3.0 — Keyboard Upgrade\n\n• Long-press any key to type symbol shortcuts instantly\n• Alternative characters now visible on each key\n• Swipe space bar left/right to switch languages (no more globe key)\n• Space bar shows current language name with ‹ › arrows\n• Smaller, cleaner key text\n• Fixed key preview animation dragging across keys\n• 8 keyboard languages supported with full long-press alternatives",
+    "downloadUrl": "https://github.com/Poorthing998/telegram-voice-bot-website/releases/download/v1.3.0/TypeGone.v1.3.0.apk",
     "mandatory": false
 }

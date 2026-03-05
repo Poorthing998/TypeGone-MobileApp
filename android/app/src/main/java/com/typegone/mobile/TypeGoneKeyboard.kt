@@ -28,7 +28,7 @@ import java.io.IOException
 class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionListener {
 
     // ─── Views ───────────────────────────────────────────────────────
-    private var keyboardView: KeyboardView? = null
+    private var keyboardView: TypeGoneKeyboardView? = null
     private var statusText: TextView? = null
     private var recordButton: TextView? = null
     private var shortcutButton: TextView? = null
@@ -146,6 +146,10 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
         shortcutButton = view.findViewById(R.id.shortcutButton)
         keyboardView   = view.findViewById(R.id.keyboard_view)
 
+        // Set hint color based on theme
+        val hintColor = if (currentTheme == "light") android.graphics.Color.parseColor("#66000000") else android.graphics.Color.parseColor("#66FFFFFF")
+        keyboardView?.setHintColor(hintColor)
+
         // Load active languages from prefs
         loadActiveLanguages()
 
@@ -158,8 +162,20 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
         // Start on letter keyboard
         currentKeyboard = letterKeyboard
         keyboardView?.keyboard = currentKeyboard
-        keyboardView?.isPreviewEnabled = true
+        keyboardView?.isPreviewEnabled = false
         keyboardView?.setOnKeyboardActionListener(this)
+
+        // Update space bar to show current language name
+        updateSpaceBarLabel(langInfo.nativeLabel)
+
+        // Enable language arrows if multiple languages are active
+        keyboardView?.showLanguageArrows = activeLanguages.size > 1
+
+        // Wire up space bar swipe for language switching
+        keyboardView?.onLanguageSwipe = { direction ->
+            if (direction > 0) cycleLanguageForward() else cycleLanguageBackward()
+            hapticMedium()
+        }
 
         // Show current language in status bar
         statusText?.text = "${langInfo.nativeLabel} — Tap MIC to voice-type"
@@ -245,11 +261,6 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
             CODE_TO_SYM2 -> switchKeyboard(symbols2Keyboard)
             CODE_TO_ABC  -> switchKeyboard(letterKeyboard)
 
-            // ── Language Switching (Globe key) ───────────────────────
-            CODE_GLOBE -> {
-                cycleLanguage()
-                hapticMedium()
-            }
 
             // ── Space (with double-space → period logic) ─────────
             CODE_SPACE -> {
@@ -416,17 +427,37 @@ class TypeGoneKeyboard : InputMethodService(), KeyboardView.OnKeyboardActionList
         }
     }
 
-    private fun cycleLanguage() {
+    private fun cycleLanguageForward() {
         if (activeLanguages.size <= 1) return
         currentLangIndex = (currentLangIndex + 1) % activeLanguages.size
+        applyLanguageSwitch()
+    }
+
+    private fun cycleLanguageBackward() {
+        if (activeLanguages.size <= 1) return
+        currentLangIndex = (currentLangIndex - 1 + activeLanguages.size) % activeLanguages.size
+        applyLanguageSwitch()
+    }
+
+    private fun applyLanguageSwitch() {
         val langCode = activeLanguages[currentLangIndex]
         val langInfo = ALL_LANGUAGES.find { it.code == langCode } ?: ALL_LANGUAGES[0]
         letterKeyboard = Keyboard(this, langInfo.xmlRes)
         currentKeyboard = letterKeyboard
         keyboardView?.keyboard = currentKeyboard
         shiftState = ShiftState.OFF
+        updateSpaceBarLabel(langInfo.nativeLabel)
         keyboardView?.invalidateAllKeys()
         statusText?.text = "${langInfo.nativeLabel} — Tap MIC to voice-type"
+    }
+
+    private fun updateSpaceBarLabel(langName: String) {
+        currentKeyboard?.keys?.forEach { key ->
+            if (key.codes.isNotEmpty() && key.codes[0] == CODE_SPACE) {
+                key.label = langName
+            }
+        }
+        keyboardView?.invalidateAllKeys()
     }
 
     // ═════════════════════════════════════════════════════════════════
